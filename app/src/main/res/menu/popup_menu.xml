@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/delete_media"
+        android:title="delete media" />
+
+    <item
+        android:id="@+id/song_info"
+        android:title="song info" />
+
+    <item
+        android:id="@+id/play_next"
+        android:title="play next" />
+
+</menu>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.HomeFragment">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:background="#000"
+        app:itemTextColor="@drawable/selection"
+        app:tabIndicatorColor="@drawable/selection"
+        app:tabTextColor="@drawable/selection">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/all_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="all" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/artist_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Artist" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/search_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_tab"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tab_parent"
+        android:background="#000" />
+
+</RelativeLayout>
