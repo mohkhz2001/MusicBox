@@ -72,7 +72,7 @@ public class AllMusicListAdapter extends RecyclerView.Adapter<AllMusicListAdapte
             mmr.setDataSource(musicList.get(position).getPath().getPath());
             byte[] data = mmr.getEmbeddedPicture();
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, mmr.getEmbeddedPicture().length);
-            holder.artistImage.setImageBitmap(getResizedBitmap(bitmap, 40));
+            holder.artistImage.setImageBitmap(getResizedBitmap(bitmap, 80));
 //            ImageLoader imageLoader = ImageLoader.getInstance();
 //            ImageLoader.getInstance().init(config);
 //            imageLoader.displayImage(String.valueOf(getImageUri(bitmap)), holder.artistImage);
