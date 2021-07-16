@@ -70,6 +70,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
 import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE;
+import static com.mohammadkz.musicbox.ApplicationClass.ACTION_CLOSE;
 import static com.mohammadkz.musicbox.ApplicationClass.ACTION_NEXT;
 import static com.mohammadkz.musicbox.ApplicationClass.ACTION_PLAY;
 import static com.mohammadkz.musicbox.ApplicationClass.ACTION_PREV;
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
     MediaSessionCompat mediaSession;
     MusicService musicService;
     NotificationManager notificationManager;
-
+    Boolean played = false;
 
     int playNext = -1;
     int musicPos; // position of the music that play
@@ -407,12 +408,14 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
         play_pause.setImageResource(R.drawable.pause);
         mediaPlayer.start();
         notification(R.drawable.pause);
+        played = true;
     }
 
     public void mediaPlayer_pause() {
         mediaPlayer.pause();
         play_pause.setImageResource(R.drawable.play);
         notification(R.drawable.play);
+        played = false;
     }
 
     public void playNext(int playNext) {
@@ -531,7 +534,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
         TedPermission.with(this)
                 .setPermissionListener(permissionListener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                .setPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check();
     }
 
@@ -539,7 +542,8 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
         @Override
         public void onAudioFocusChange(int focusChange) {
             if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
-                mediaPlayer_start();
+                if (played)
+                    mediaPlayer_start();
             } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT) {
                 mediaPlayer_pause();
 //                mediaPlayer.seekTo(0);
@@ -592,6 +596,9 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
         Intent nextIntent = new Intent(this, NotificationReceiver.class).setAction(ACTION_NEXT);
         PendingIntent nextPendingIntent = PendingIntent.getBroadcast(this, 0, nextIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
+        Intent closeIntent = new Intent(this, NotificationReceiver.class).setAction(ACTION_CLOSE);
+        PendingIntent closePendingIntent = PendingIntent.getBroadcast(this, 0, closeIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
         Bitmap bitmap = bimapGenerate(toPlay.get(musicPos).getPath());
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
@@ -602,6 +609,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
                 .addAction(R.drawable.previous, "previous", prevPendingIntent)
                 .addAction(play_pause, "play", playPendingIntent)
                 .addAction(R.drawable.next, "next", nextPendingIntent)
+                .addAction(R.drawable.ic_close, "close", closePendingIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()) // .setMediaSession(mediaSession.getSessionToken())
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -654,12 +662,18 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
             mediaPlayer_start();
     }
 
+    @Override
+    public void close() {
+        notificationManager.cancel(0);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        unbindService(this);
-        if (notificationManager != null)
+        if (!mediaPlayer.isPlaying()) {
+            unbindService(this);
             notificationManager.cancel(0);
-
+        }
     }
 
     @Override
@@ -667,6 +681,12 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
         super.onResume();
         Intent intent = new Intent(this, MusicService.class);
         boolean check = bindService(intent, this, BIND_AUTO_CREATE);
+
+        if (mediaPlayer.isPlaying())
+            notification(R.drawable.pause);
+        else
+            notification(R.drawable.play);
+
         Log.e("bindService", " " + check);
     }
 
