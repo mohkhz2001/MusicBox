@@ -10,6 +10,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     public static final String ACTION_PLAY = "PLAY";
     public static final String ACTION_NEXT = "NEXT";
     public static final String ACTION_PREV = "PREVIOUS";
+    public static final String ACTION_CLOSE = "CLOSE";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -27,6 +28,10 @@ public class NotificationReceiver extends BroadcastReceiver {
                     break;
 
                 case ACTION_PREV:
+                    intent1.putExtra("action", intent.getAction());
+                    context.startService(intent1);
+                    break;
+                case ACTION_CLOSE:
                     intent1.putExtra("action", intent.getAction());
                     context.startService(intent1);
                     break;

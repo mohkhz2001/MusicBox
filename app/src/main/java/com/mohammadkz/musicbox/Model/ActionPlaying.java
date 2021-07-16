@@ -4,4 +4,5 @@ public interface ActionPlaying {
     void next();
     void prev();
     void play();
+    void close();
 }

@@ -16,6 +16,7 @@ public class MusicService extends Service {
     public static final String ACTION_PLAY = "PLAY";
     public static final String ACTION_NEXT = "NEXT";
     public static final String ACTION_PREV = "PREVIOUS";
+    public static final String ACTION_CLOSE = "CLOSE";
 
     private IBinder mBinder = new MyBinder();
 
@@ -36,7 +37,7 @@ public class MusicService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getStringExtra("action");
-        Log.e("action" , action + "");
+        Log.e("action", action + "");
         if (action != null)
             switch (action) {
                 case ACTION_PLAY:
@@ -47,6 +48,9 @@ public class MusicService extends Service {
                     break;
                 case ACTION_PREV:
                     actionPlaying.prev();
+                    break;
+                case ACTION_CLOSE:
+                    actionPlaying.close();
                     break;
             }
 
