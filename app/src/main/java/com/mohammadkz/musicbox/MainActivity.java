@@ -608,7 +608,12 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
         Intent closeIntent = new Intent(this, NotificationReceiver.class).setAction(ACTION_CLOSE);
         PendingIntent closePendingIntent = PendingIntent.getBroadcast(this, 0, closeIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Bitmap bitmap = bimapGenerate(Uri.parse(toPlay.get(musicPos).getPath()));
+        Bitmap bitmap;
+        try {
+            bitmap = bimapGenerate(Uri.parse(toPlay.get(musicPos).getPath()));
+        } catch (Exception e) {
+            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.audio_img_white);
+        }
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
                 .setLargeIcon(bitmap)
