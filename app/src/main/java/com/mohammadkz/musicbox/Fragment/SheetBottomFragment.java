@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -41,7 +42,7 @@ public class SheetBottomFragment extends BottomSheetDialogFragment {
 
     ImageView blurBg, play, next, previous;
     CircleImageView singer_image;
-    TextView artistName, musicName , remaining , past;
+    TextView artistName, musicName, remaining, past;
     SeekBar seekbar;
 
 
@@ -126,6 +127,15 @@ public class SheetBottomFragment extends BottomSheetDialogFragment {
             }
         });
 
+        ((MainActivity) getActivity()).mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                int pos = ((MainActivity) getActivity()).nextMusic();
+                music = ((MainActivity) getActivity()).toPlay.get(pos);
+                setItem();
+            }
+        });
+
     }
 
     private void setItem() {
@@ -141,7 +151,6 @@ public class SheetBottomFragment extends BottomSheetDialogFragment {
 
         String time = timerConversion(Integer.parseInt(music.getDuration()));
         remaining.setText(time);
-
 
     }
 
@@ -239,10 +248,10 @@ public class SheetBottomFragment extends BottomSheetDialogFragment {
         int mns = (int) ((time / 60000) % 60000);
         int scs = (int) (time % 60000 / 1000);
         Log.e("TIME", " " + mns + ":" + scs);
-        if (scs <10){
-            return mns+":0" + scs;
-        }else
-        return mns+":" + scs;
+        if (scs < 10) {
+            return mns + ":0" + scs;
+        } else
+            return mns + ":" + scs;
 
     }
 }
