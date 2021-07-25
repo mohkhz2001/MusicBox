@@ -129,7 +129,7 @@ public class SheetBottomFragment extends BottomSheetDialogFragment {
     }
 
     private void setItem() {
-        setSinger_image(music.getPath());
+        setSinger_image(Uri.parse(music.getPath()));
         musicName.setText(music.getName());
         artistName.setText(music.getArtist());
         setAudioProgress();

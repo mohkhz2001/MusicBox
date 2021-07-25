@@ -72,7 +72,7 @@ public class SheetBottomMusicInfo extends BottomSheetDialogFragment {
     private void setValue(){
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(music.getPath().getPath());
+            mmr.setDataSource(music.getPath());
             byte[] data = mmr.getEmbeddedPicture();
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, mmr.getEmbeddedPicture().length);
             musicImg.setImageBitmap(bitmap);

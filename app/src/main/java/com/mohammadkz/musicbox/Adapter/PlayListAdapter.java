@@ -47,7 +47,7 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.ViewHo
 
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(playList.get(position).getMusicList().get(0).getPath().getPath());
+            mmr.setDataSource(playList.get(position).getMusicList().get(0).getPath());
             byte[] data = mmr.getEmbeddedPicture();
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, mmr.getEmbeddedPicture().length);
             holder.img.setImageBitmap(bitmap);

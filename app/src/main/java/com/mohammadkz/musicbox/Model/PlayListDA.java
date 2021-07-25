@@ -65,7 +65,7 @@ public class PlayListDA {
                     String musicName = cursor.getString(cursor.getColumnIndex("musicName"));
 
                     Music music = new Music();
-                    music.setPath(Uri.parse(Path));
+                    music.setPath(Path);
                     music.setName(musicName);
 
                     musics.add(music);

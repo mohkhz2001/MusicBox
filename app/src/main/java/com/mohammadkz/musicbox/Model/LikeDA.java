@@ -52,7 +52,7 @@ public class LikeDA {
 
                     String Path = cursor.getString(cursor.getColumnIndex(path));
                     Music music = new Music();
-                    music.setPath(Uri.parse(Path));
+                    music.setPath(Path);
 
                     for (int i = 0; i < musicList.size(); i++) {
                         if (musicList.get(i).getPath().toString().equals(Path)) {

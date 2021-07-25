@@ -3,7 +3,7 @@ package com.mohammadkz.musicbox.Model;
 import android.net.Uri;
 
 public class Music {
-    private Uri Path;
+    private String Path;
     private String Name;
     private String Album;
     private String Artist;
@@ -14,7 +14,7 @@ public class Music {
         Liked = false;
     }
 
-    public Music(Uri path, String name, String album, String artist, String duration) {
+    public Music(String path, String name, String album, String artist, String duration) {
         Path = path;
         Name = name;
         Album = album;
@@ -31,11 +31,11 @@ public class Music {
         Liked = liked;
     }
 
-    public Uri getPath() {
+    public String getPath() {
         return Path;
     }
 
-    public void setPath(Uri path) {
+    public void setPath(String path) {
         Path = path;
     }
 

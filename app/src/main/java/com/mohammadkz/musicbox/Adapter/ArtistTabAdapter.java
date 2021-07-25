@@ -46,7 +46,7 @@ public class ArtistTabAdapter extends RecyclerView.Adapter<ArtistTabAdapter.View
             holder.artistName1.setText(artistsListLeft.get(position).getArtistName());
             try {
                 MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                mmr.setDataSource(artistsListLeft.get(position).getArtistMusic().get(0).getPath().getPath());
+                mmr.setDataSource(artistsListLeft.get(position).getArtistMusic().get(0).getPath());
                 byte[] data = mmr.getEmbeddedPicture();
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, mmr.getEmbeddedPicture().length);
                 holder.artistImage1.setImageBitmap(bitmap);
@@ -62,7 +62,7 @@ public class ArtistTabAdapter extends RecyclerView.Adapter<ArtistTabAdapter.View
             holder.artistName2.setText(artistsListRight.get(position).getArtistName());
             try {
                 MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                mmr.setDataSource(artistsListRight.get(position).getArtistMusic().get(0).getPath().getPath());
+                mmr.setDataSource(artistsListRight.get(position).getArtistMusic().get(0).getPath());
                 byte[] data = mmr.getEmbeddedPicture();
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, mmr.getEmbeddedPicture().length);
                 holder.artistImage2.setImageBitmap(bitmap);

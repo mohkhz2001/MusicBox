@@ -120,7 +120,7 @@ public class PlayListMusicFragment extends Fragment {
         if (playList.getMusicList().size() > 0) {
             try {
                 MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                mmr.setDataSource(playList.getMusicList().get(0).getPath().getPath());
+                mmr.setDataSource(playList.getMusicList().get(0).getPath());
                 byte[] data = mmr.getEmbeddedPicture();
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, mmr.getEmbeddedPicture().length);
                 img.setImageBitmap(bitmap);

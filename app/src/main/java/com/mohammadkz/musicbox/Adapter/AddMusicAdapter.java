@@ -47,7 +47,7 @@ public class AddMusicAdapter extends RecyclerView.Adapter<AddMusicAdapter.ViewHo
         // set img of the pic
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(musicList.get(position).getPath().getPath());
+            mmr.setDataSource(musicList.get(position).getPath());
             byte[] data = mmr.getEmbeddedPicture();
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, mmr.getEmbeddedPicture().length);
             holder.artistImage.setImageBitmap(bitmap);

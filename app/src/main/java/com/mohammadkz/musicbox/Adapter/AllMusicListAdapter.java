@@ -1,7 +1,9 @@
 package com.mohammadkz.musicbox.Adapter;
 
 import android.app.Activity;
+
 import java.io.ByteArrayOutputStream;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -69,7 +71,7 @@ public class AllMusicListAdapter extends RecyclerView.Adapter<AllMusicListAdapte
 
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(musicList.get(position).getPath().getPath());
+            mmr.setDataSource(musicList.get(position).getPath());
             byte[] data = mmr.getEmbeddedPicture();
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, mmr.getEmbeddedPicture().length);
             holder.artistImage.setImageBitmap(getResizedBitmap(bitmap, 80));
