@@ -76,7 +76,10 @@ public class AllMusicTabFragment extends Fragment {
         list.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         list.setAdapter(allMusicListAdapter);
 
-        list.scrollToPosition(10);
+        list.scrollToPosition(((MainActivity) getActivity()).getPosToJump());
+
+        ((MainActivity) getActivity()).playAudio(((MainActivity) getActivity()).getPosToJump(), getContext());
+        ((MainActivity) getActivity()).mediaPlayer_pause();
 
         allMusicListAdapter.setOnItemClickListener(new AllMusicListAdapter.OnItemClickListener() {
             @Override
@@ -111,7 +114,7 @@ public class AllMusicTabFragment extends Fragment {
 
                                 case R.id.song_info:
                                     SheetBottomMusicInfo sheetBottomMusicInfo = new SheetBottomMusicInfo(musicList.get(pos));
-                                    sheetBottomMusicInfo.show(getFragmentManager() , "music");
+                                    sheetBottomMusicInfo.show(getFragmentManager(), "music");
 
                                     break;
 

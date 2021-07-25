@@ -19,6 +19,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -47,6 +48,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.jackandphantom.blurimage.BlurImage;
@@ -61,6 +63,9 @@ import com.mohammadkz.musicbox.Model.Artist;
 import com.mohammadkz.musicbox.Model.LikeDA;
 import com.mohammadkz.musicbox.Model.Music;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -70,6 +75,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
 import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE;
+import static android.content.Context.MODE_PRIVATE;
 import static com.mohammadkz.musicbox.ApplicationClass.ACTION_CLOSE;
 import static com.mohammadkz.musicbox.ApplicationClass.ACTION_NEXT;
 import static com.mohammadkz.musicbox.ApplicationClass.ACTION_PLAY;
@@ -97,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
     MusicService musicService;
     NotificationManager notificationManager;
     Boolean played = false;
+    int posToJump;
 
     int playNext = -1;
     int musicPos; // position of the music that play
@@ -126,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
         if (checkPermission()) {
             getAudioFiles();
             startFragment();
+            sharedPreferences_read();
         }
 
     }
@@ -302,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
                 String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 
-                Music modelAudio = new Music(Uri.parse(url), title, null, artist, duration);
+                Music modelAudio = new Music(url, title, null, artist, duration);
 
                 setArtistList(modelAudio);
                 musicList.add(modelAudio);
@@ -356,12 +364,13 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
             mediaPlayer.prepare();
             mediaPlayer.start();
 
-            setSinger_image(toPlay.get(musicPos).getPath());
+            setSinger_image(Uri.parse(toPlay.get(musicPos).getPath()));
 //
             musicName.setText(toPlay.get(musicPos).getName());
             artistName.setText(toPlay.get(musicPos).getArtist());
             play_pause.setImageResource(R.drawable.pause);
 
+            sharedPreferences_edit(toPlay.get(musicPos));
             notification(R.drawable.pause); // show notification
         } catch (Exception e) {
             Log.e("ERROR", " " + e.getMessage());
@@ -599,7 +608,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
         Intent closeIntent = new Intent(this, NotificationReceiver.class).setAction(ACTION_CLOSE);
         PendingIntent closePendingIntent = PendingIntent.getBroadcast(this, 0, closeIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Bitmap bitmap = bimapGenerate(toPlay.get(musicPos).getPath());
+        Bitmap bitmap = bimapGenerate(Uri.parse(toPlay.get(musicPos).getPath()));
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
                 .setLargeIcon(bitmap)
@@ -703,4 +712,56 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
         Log.e("Disconnected", musicService + "");
         musicService = null;
     }
+
+    public void sharedPreferences_edit(Music music) {
+        SharedPreferences sh = getSharedPreferences("lastMusic", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String str = gson.toJson(music);
+        Log.e("path", str);
+        SharedPreferences.Editor editor = sh.edit();
+        editor.clear();
+        editor.putString("music", str);
+        editor.commit();
+
+    }
+
+    private void sharedPreferences_read() {
+        try {
+            SharedPreferences sh = getSharedPreferences("lastMusic", MODE_PRIVATE);
+            String data = sh.getString("music", null);
+            System.out.println("   ");
+            if (data != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(data);
+                    Music music = new Music();
+                    music.setName(jsonObject.getString("Name"));
+                    music.setPath(jsonObject.getString("Path"));
+                    music.setArtist(jsonObject.getString("Artist"));
+                    music.setDuration(jsonObject.getString("Duration"));
+//                    checkMusic(music);
+                    posToJump = musicList.indexOf(music);
+
+                    for (int i = 0; i < musicList.size(); i++) {
+                        if (musicList.get(i).getPath().equals(music.getPath()) && musicList.get(i).getName().equals(music.getName())) {
+                            posToJump = i;
+                        }
+                    }
+                    System.out.println(" ");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+
+            }
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
+
+    public int getPosToJump() {
+        return posToJump;
+    }
+
 }
