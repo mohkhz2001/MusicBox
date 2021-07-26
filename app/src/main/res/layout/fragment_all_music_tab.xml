@@ -12,5 +12,15 @@
         android:layout_height="match_parent"
         android:background="#000" />
 
+    <ImageView
+        android:id="@+id/jump"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_jump_to"/>
+
 
 </RelativeLayout>
