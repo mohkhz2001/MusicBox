@@ -85,7 +85,7 @@ public class SearchTabFragment extends Fragment {
     }
 
     private void setAdapter() {
-        AllMusicListAdapter allMusicListAdapter = new AllMusicListAdapter(getContext(), searched, getActivity());
+        AllMusicListAdapter allMusicListAdapter = new AllMusicListAdapter(getContext(), searched, getActivity() , false);
         list.setHasFixedSize(true);
         list.setLayoutManager(new LinearLayoutManager(view.getContext()));
         list.setAdapter(allMusicListAdapter);

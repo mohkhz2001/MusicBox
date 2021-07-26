@@ -68,7 +68,7 @@ public class AllMusicTabFragment extends Fragment {
 
     private void setAdapter() {
 
-        AllMusicListAdapter allMusicListAdapter = new AllMusicListAdapter(getContext(), musicList, getActivity());
+        AllMusicListAdapter allMusicListAdapter = new AllMusicListAdapter(getContext(), musicList, getActivity(), true);
         list.setHasFixedSize(true);
         list.setLayoutManager(new LinearLayoutManager(view.getContext()));
         list.setItemViewCacheSize(20);

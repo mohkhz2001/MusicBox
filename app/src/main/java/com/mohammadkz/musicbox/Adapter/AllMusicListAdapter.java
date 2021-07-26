@@ -49,11 +49,13 @@ public class AllMusicListAdapter extends RecyclerView.Adapter<AllMusicListAdapte
     public OnClickListener onPopupMenuClickListener;
     Activity activity;
     ImageLoaderConfiguration config;
+    boolean showOther;
 
-    public AllMusicListAdapter(Context context, List<Music> musicList, Activity activity) {
+    public AllMusicListAdapter(Context context, List<Music> musicList, Activity activity, boolean showOther) {
         this.context = context;
         this.musicList = musicList;
         this.activity = activity;
+        this.showOther = showOther;
         config = new ImageLoaderConfiguration.Builder(context).build();
     }
 
@@ -133,6 +135,14 @@ public class AllMusicListAdapter extends RecyclerView.Adapter<AllMusicListAdapte
             artistName = itemView.findViewById(R.id.artistName);
             popupMenu = itemView.findViewById(R.id.popupMenu);
             like = itemView.findViewById(R.id.like);
+
+            if (!showOther) {
+                like.setVisibility(View.GONE);
+                popupMenu.setVisibility(View.GONE);
+            } else {
+                like.setVisibility(View.VISIBLE);
+                popupMenu.setVisibility(View.VISIBLE);
+            }
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

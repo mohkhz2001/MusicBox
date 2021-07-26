@@ -139,7 +139,7 @@ public class PlayListMusicFragment extends Fragment {
 
     private void setAdapter() {
 
-        AllMusicListAdapter allMusicListAdapter = new AllMusicListAdapter(getContext(), playList.getMusicList(), getActivity());
+        AllMusicListAdapter allMusicListAdapter = new AllMusicListAdapter(getContext(), playList.getMusicList(), getActivity() , false);
         list.setHasFixedSize(true);
         list.setLayoutManager(new LinearLayoutManager(view.getContext()));
         list.setAdapter(allMusicListAdapter);

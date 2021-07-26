@@ -56,7 +56,7 @@ public class LikeFragment extends Fragment {
 
     private void setAdapter() {
 
-        AllMusicListAdapter allMusicListAdapter = new AllMusicListAdapter(getContext(), likedList, getActivity());
+        AllMusicListAdapter allMusicListAdapter = new AllMusicListAdapter(getContext(), likedList, getActivity() , true);
         list.setHasFixedSize(true);
         list.setLayoutManager(new LinearLayoutManager(view.getContext()));
         list.setAdapter(allMusicListAdapter);
