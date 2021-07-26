@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -37,6 +38,7 @@ public class AllMusicTabFragment extends Fragment {
     View view;
     List<Music> musicList;
     RecyclerView list;
+    ImageView jump;
 
 
     public AllMusicTabFragment(List<Music> musicList) {
@@ -60,10 +62,19 @@ public class AllMusicTabFragment extends Fragment {
 
     private void initViews() {
         list = view.findViewById(R.id.list);
+        jump = view.findViewById(R.id.jump);
     }
 
     private void controllerViews() {
-
+        jump.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (list.getAdapter() != null) {
+                    list.scrollToPosition(((MainActivity) getActivity()).getPosToJump());
+                    Toast.makeText(getContext(), "Jumped to current music", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void setAdapter() {
@@ -75,11 +86,6 @@ public class AllMusicTabFragment extends Fragment {
         list.setDrawingCacheEnabled(true);
         list.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         list.setAdapter(allMusicListAdapter);
-
-        list.scrollToPosition(((MainActivity) getActivity()).getPosToJump());
-
-        ((MainActivity) getActivity()).playAudio(((MainActivity) getActivity()).getPosToJump(), getContext());
-        ((MainActivity) getActivity()).mediaPlayer_pause();
 
         allMusicListAdapter.setOnItemClickListener(new AllMusicListAdapter.OnItemClickListener() {
             @Override

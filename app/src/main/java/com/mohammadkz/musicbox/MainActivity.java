@@ -369,6 +369,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
             musicName.setText(toPlay.get(musicPos).getName());
             artistName.setText(toPlay.get(musicPos).getArtist());
             play_pause.setImageResource(R.drawable.pause);
+            posToJump = musicPos;
 
             sharedPreferences_edit(toPlay.get(musicPos));
             notification(R.drawable.pause); // show notification
@@ -407,9 +408,15 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
     public void start() {
         audioManager();
         if (!mediaPlayer.isPlaying()) {
-            setDefaultPlayList();
-            setPlayMusic(0, getApplicationContext());
-            mediaPlayer_pause();
+            if (posToJump != 0) {
+                setDefaultPlayList();
+                setPlayMusic(posToJump, getApplicationContext());
+                mediaPlayer_pause();
+            } else {
+                setDefaultPlayList();
+                setPlayMusic(0, getApplicationContext());
+                mediaPlayer_pause();
+            }
         }
     }
 
