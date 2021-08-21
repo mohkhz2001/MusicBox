@@ -49,10 +49,10 @@
 
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/singer_image"
                 android:layout_width="66dp"
                 android:layout_height="66dp"
-                android:src="@drawable/audio_img_white"
-                android:id="@+id/singer_image"/>
+                android:src="@drawable/audio_img_white" />
 
             <TextView
                 android:id="@+id/musicName"
@@ -63,6 +63,10 @@
                 android:layout_marginTop="5dp"
                 android:layout_toLeftOf="@id/play_pause"
                 android:layout_toRightOf="@id/singer_image"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:text="Music name"
                 android:textColor="#EEEEEE"
