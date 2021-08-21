@@ -54,6 +54,7 @@ import com.gun0912.tedpermission.TedPermission;
 import com.jackandphantom.blurimage.BlurImage;
 //import com.mohammadkz.musicbox.Fragment.HomeFragment;
 //import com.mohammadkz.musicbox.Fragment.LikeFragment;
+import com.mohammadkz.musicbox.Fragment.ArtistTabFragment;
 import com.mohammadkz.musicbox.Fragment.HomeFragment;
 import com.mohammadkz.musicbox.Fragment.LikeFragment;
 import com.mohammadkz.musicbox.Fragment.PlayListFragment;
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
     ImageView background, play_pause;
     CircleImageView singer_image;
     public List<Music> musicList, favouriteList, toPlay;
-    List<Artist> artistList;
+    public List<Artist> artistList;
     TextView musicName, artistName;
     BottomNavigationView bottom_nav;
     public MediaPlayer mediaPlayer;
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
         background = findViewById(R.id.background);
         singer_image = findViewById(R.id.singer_image);
         musicName = findViewById(R.id.musicName);
+        musicName.setSelected(true);
         artistName = findViewById(R.id.artistName);
         bottom_nav = findViewById(R.id.bottom_nav);
         play_pause = findViewById(R.id.play_pause);
@@ -158,13 +160,18 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 switch (item.getItemId()) {
                     case R.id.home:
-                        HomeFragment homeFragment = new HomeFragment(musicList, artistList);
+                        HomeFragment homeFragment = new HomeFragment(musicList);
                         fragmentTransaction.replace(R.id.frameLayout, homeFragment);
                         fragmentTransaction.commit();
                         break;
                     case R.id.like:
                         LikeFragment likeFragment = new LikeFragment((ArrayList<Music>) musicList, setLikedMusic());
                         fragmentTransaction.replace(R.id.frameLayout, likeFragment);
+                        fragmentTransaction.commit();
+                        break;
+                    case R.id.artist:
+                        ArtistTabFragment artistTabFragment = new ArtistTabFragment(artistList);
+                        fragmentTransaction.replace(R.id.frameLayout, artistTabFragment);
                         fragmentTransaction.commit();
                         break;
 
@@ -335,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
     private void startFragment() {
         System.out.println();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        HomeFragment homeFragment = new HomeFragment(musicList, artistList);
+        HomeFragment homeFragment = new HomeFragment(musicList);
         fragmentTransaction.replace(R.id.frameLayout, homeFragment);
         fragmentTransaction.commit();
     }

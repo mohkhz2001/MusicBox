@@ -25,12 +25,6 @@
             android:text="all" />
 
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/artist_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Artist" />
-
-        <com.google.android.material.tabs.TabItem
             android:id="@+id/search_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

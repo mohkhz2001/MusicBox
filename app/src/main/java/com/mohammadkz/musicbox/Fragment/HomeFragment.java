@@ -22,11 +22,9 @@ public class HomeFragment extends Fragment {
     TabLayout tabLayout;
     TabItem all_tab, artist_tab, search_tab;
     List<Music> musicList;
-    List<Artist> artistList;
 
-    public HomeFragment(List<Music> musicList, List<Artist> artistList) {
+    public HomeFragment(List<Music> musicList) {
         this.musicList = musicList;
-        this.artistList = artistList;
     }
 
     @Override
@@ -45,7 +43,6 @@ public class HomeFragment extends Fragment {
     private void initViews() {
         tabLayout = view.findViewById(R.id.tab_parent);
         all_tab = view.findViewById(R.id.all_tab);
-        artist_tab = view.findViewById(R.id.artist_tab);
         search_tab = view.findViewById(R.id.search_tab);
     }
 
@@ -60,10 +57,6 @@ public class HomeFragment extends Fragment {
                         fragmentTransaction.replace(R.id.frameLayout_tab, allMusicTabFragment).commit();
                         break;
                     case 1:
-                        ArtistTabFragment artistTabFragment = new ArtistTabFragment(artistList);
-                        fragmentTransaction.replace(R.id.frameLayout_tab, artistTabFragment).commit();
-                        break;
-                    case 2:
                         SearchTabFragment searchTabFragment = new SearchTabFragment(musicList);
                         fragmentTransaction.replace(R.id.frameLayout_tab , searchTabFragment).commit();
                         break;
