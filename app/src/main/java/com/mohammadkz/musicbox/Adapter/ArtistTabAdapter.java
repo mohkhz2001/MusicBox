@@ -93,31 +93,29 @@ public class ArtistTabAdapter extends RecyclerView.Adapter<ArtistTabAdapter.View
             artistImage2 = itemView.findViewById(R.id.artistImage2);
             artistName2 = itemView.findViewById(R.id.artistName2);
 
-//            artistImage1.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    onLeftItemClickListener.onItemClick(getAdapterPosition(), v);
-//                }
-//            });
-//
-//            artistImage2.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    onRightItemClickListener.onItemClick(getAdapterPosition(), v);
-//                }
-//            });
+            artistImage1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick(getAdapterPosition(), v);
+                }
+            });
+
+            artistImage2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onItemClick(getAdapterPosition(), v);
+                }
+            });
+
+
         }
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     public interface OnItemClickListener {
         void onItemClick(int pos, View v);
     }
-
-//    public void setOnPopupMenuClickListener(OnItemClickListener onLeftItemClickListener) {
-//        this.onLeftItemClickListener = onLeftItemClickListener;
-//    }
-
-//    public void setOnPopupMenuClickListener(AllMusicListAdapter.OnClickListener onPopupMenuClickListener) {
-//        this.onPopupMenuClickListener = onPopupMenuClickListener;
-//    }
 }

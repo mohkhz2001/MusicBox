@@ -21,6 +21,7 @@
         android:paddingLeft="10dp"
         android:paddingRight="22dp"
         android:singleLine="true"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/guideline14"
         app:layout_constraintStart_toStartOf="@+id/guideline13"
         app:layout_constraintTop_toTopOf="parent" />

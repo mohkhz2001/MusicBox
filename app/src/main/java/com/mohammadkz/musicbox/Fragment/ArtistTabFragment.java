@@ -3,12 +3,18 @@ package com.mohammadkz.musicbox.Fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.mohammadkz.musicbox.Adapter.ArtistTabAdapter;
 import com.mohammadkz.musicbox.Model.Artist;
@@ -78,7 +84,45 @@ public class ArtistTabFragment extends Fragment {
 
         listLeft.setAdapter(artistTabAdapter);
 
+        artistTabAdapter.setOnItemClickListener(new ArtistTabAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int pos, View v) {
 
+                switch (v.getId()) {
+                    case R.id.artistImage1:
+                        Log.e("a", "1-" + pos);
+                        startForLeft(pos);
+                        break;
+
+                    case R.id.artistImage2:
+                        Log.e("a", "2-" + pos);
+                        startForRight(pos);
+                        break;
+                }
+                Log.e("a", "" + pos);
+            }
+        });
+
+    }
+
+    private void startForRight(int pos) {
+        ArtistPlayerListFragment artistPlayerListFragment = new ArtistPlayerListFragment(artistsRight.get(pos), artistList);
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.frameLayout, artistPlayerListFragment)
+                .addToBackStack(null) // name can be null
+                .commit();
+
+    }
+
+    private void startForLeft(int pos) {
+        ArtistPlayerListFragment artistPlayerListFragment = new ArtistPlayerListFragment(artistsLeft.get(pos), artistList);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, artistPlayerListFragment, null)
+                .setReorderingAllowed(true)
+                .addToBackStack("artistTab")
+                .commit();
+        ;
     }
 
 }
