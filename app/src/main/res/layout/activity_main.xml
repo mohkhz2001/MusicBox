@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".MainActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -18,6 +19,7 @@
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         app:itemIconTint="@drawable/tab_selection"
+        app:itemRippleColor="@null"
         app:itemTextColor="@drawable/tab_selection"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu" />
@@ -105,7 +107,8 @@
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_card" />
+        android:layout_above="@id/bottom_card"
+        android:animateLayoutChanges="true" />
 
 
 </RelativeLayout>
