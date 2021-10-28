@@ -1,16 +1,8 @@
 package com.mohammadkz.musicbox.Fragment;
 
-import android.app.ProgressDialog;
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,18 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.mohammadkz.musicbox.Adapter.AllMusicListAdapter;
 import com.mohammadkz.musicbox.MainActivity;
-import com.mohammadkz.musicbox.Model.LikeDA;
 import com.mohammadkz.musicbox.Model.Music;
 import com.mohammadkz.musicbox.R;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.net.URI;
 import java.util.List;
 
 
@@ -124,6 +116,10 @@ public class AllMusicTabFragment extends Fragment {
 
                                     break;
 
+                                case R.id.shareMusic:
+                                    shareAudio(musicList.get(pos).getPath());
+                                    break;
+
                                 default:
                                     Toast.makeText(getContext(), "Sorry try again later", Toast.LENGTH_SHORT).show();
                                     break;
@@ -163,6 +159,24 @@ public class AllMusicTabFragment extends Fragment {
 
     private void refreshTable() {
         setAdapter();
+    }
+
+    public void shareAudio(String path) {
+        try {
+            Intent shareMedia = new Intent(Intent.ACTION_SEND);
+
+            shareMedia.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            //set application package
+            shareMedia.setType("audio/*");
+            //set path of media file in ExternalStorage.
+            shareMedia.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+            startActivity(Intent.createChooser(shareMedia, "Share audio File"));
+
+            Toast.makeText(getContext(), "Song Shared Successfully", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Song Shared Unsuccessfully", Toast.LENGTH_SHORT).show();
+
+        }
     }
 
 }
