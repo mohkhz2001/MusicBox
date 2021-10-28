@@ -11,5 +11,8 @@
     <item
         android:id="@+id/play_next"
         android:title="play next" />
+    <item
+        android:id="@+id/shareMusic"
+        android:title="share the music" />
 
 </menu>
