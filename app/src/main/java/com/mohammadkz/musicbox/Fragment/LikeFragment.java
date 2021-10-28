@@ -1,5 +1,7 @@
 package com.mohammadkz.musicbox.Fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +21,6 @@ import com.mohammadkz.musicbox.Model.Music;
 import com.mohammadkz.musicbox.R;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class LikeFragment extends Fragment {
@@ -81,7 +82,7 @@ public class LikeFragment extends Fragment {
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
                             Toast.makeText(getContext(), "You Clicked : " + item.getTitle(), Toast.LENGTH_SHORT).show();
-//                    ((MainActivity) v.getContext()).setPlayMusic(1, context);
+//                         ((MainActivity) v.getContext()).setPlayMusic(1, context);
                             switch (item.getItemId()) {
                                 case R.id.delete_media:
                                     boolean check = deleteMedia(pos);
@@ -90,6 +91,15 @@ public class LikeFragment extends Fragment {
 
                                 case R.id.play_next:
                                     ((MainActivity) v.getContext()).playNext(pos);
+                                    break;
+
+                                case R.id.song_info:
+                                    SheetBottomMusicInfo sheetBottomMusicInfo = new SheetBottomMusicInfo(musicList.get(pos));
+                                    sheetBottomMusicInfo.show(getFragmentManager(), "music");
+                                    break;
+
+                                case R.id.shareMusic:
+                                    shareAudio(musicList.get(pos).getPath());
                                     break;
 
                                 default:
@@ -131,5 +141,23 @@ public class LikeFragment extends Fragment {
 
     private void refreshTable() {
         setAdapter();
+    }
+
+    public void shareAudio(String path) {
+        try {
+            Intent shareMedia = new Intent(Intent.ACTION_SEND);
+
+            shareMedia.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            //set application package
+            shareMedia.setType("audio/*");
+            //set path of media file in ExternalStorage.
+            shareMedia.putExtra(Intent.EXTRA_STREAM, Uri.parse(path));
+            startActivity(Intent.createChooser(shareMedia, "Share audio File"));
+
+            Toast.makeText(getContext(), "Song Shared Successfully", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Song Shared Unsuccessfully", Toast.LENGTH_SHORT).show();
+
+        }
     }
 }
