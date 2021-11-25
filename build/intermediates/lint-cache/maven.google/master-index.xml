@@ -28,6 +28,7 @@
   <androidx.compose.compiler/>
   <androidx.compose.foundation/>
   <androidx.compose.material/>
+  <androidx.compose.material3/>
   <androidx.compose.runtime/>
   <androidx.compose.ui/>
   <androidx.concurrent/>
@@ -61,6 +62,7 @@
   <androidx.localbroadcastmanager/>
   <androidx.media/>
   <androidx.media2/>
+  <androidx.media3/>
   <androidx.mediarouter/>
   <androidx.multidex/>
   <androidx.navigation/>
@@ -104,6 +106,7 @@
   <androidx.wear/>
   <androidx.wear.compose/>
   <androidx.wear.tiles/>
+  <androidx.wear.watchface/>
   <androidx.webkit/>
   <androidx.window/>
   <androidx.work/>
@@ -164,6 +167,7 @@
   <com.google.android.instantapps/>
   <com.google.android.instantapps.thirdpartycompat/>
   <com.google.android.libraries.car/>
+  <com.google.android.libraries.enterprise.amapi/>
   <com.google.android.libraries.maps/>
   <com.google.android.libraries.mapsplatform.secrets-gradle-plugin/>
   <com.google.android.libraries.places/>
@@ -187,6 +191,7 @@
   <com.google.firebase/>
   <com.google.gms/>
   <com.google.jacquard/>
+  <com.google.mediapipe/>
   <com.google.mlkit/>
   <com.google.oboe/>
   <com.google.prefab/>
