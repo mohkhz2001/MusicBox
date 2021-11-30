@@ -1,43 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:animateLayoutChanges="true"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="#000"
     tools:context=".Fragment.HomeFragment">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_parent"
+    <RelativeLayout
+        android:id="@+id/option"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:background="#000"
-        app:itemTextColor="@drawable/selection"
-        app:tabIndicatorColor="@drawable/selection"
-        app:tabTextColor="@drawable/selection">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/all_tab"
+        <ImageView
+            android:id="@+id/playAll"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:padding="2dp"
+            android:src="@drawable/ic_play_circle" />
+
+        <TextView
+            android:id="@+id/playAllTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="all" />
+            android:layout_centerVertical="true"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_toRightOf="@id/playAll"
+            android:text="play all"
+            android:textColor="#fff"
+            android:textSize="17dp"
+            android:textStyle="bold" />
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/search_tab"
+        <TextView
+            android:id="@+id/number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search" />
+            android:layout_centerVertical="true"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_toRightOf="@id/playAllTxt"
+            android:textColor="#fff"
+            android:textSize="17dp"
+            android:textStyle="bold"
+            tools:text="(125)" />
 
-    </com.google.android.material.tabs.TabLayout>
+        <ImageView
+            android:id="@+id/sort"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_sort" />
 
-    <FrameLayout
-        android:id="@+id/frameLayout_tab"
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tab_parent"
-        android:background="#000" />
+        android:layout_below="@id/option"
+        android:background="#000"
+        android:overScrollMode="never" />
+
+    <ImageView
+        android:id="@+id/jump"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_jump_to" />
 
 </RelativeLayout>
