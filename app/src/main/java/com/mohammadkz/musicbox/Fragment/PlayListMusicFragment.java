@@ -1,24 +1,22 @@
 package com.mohammadkz.musicbox.Fragment;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -40,6 +38,8 @@ public class PlayListMusicFragment extends Fragment {
     ImageView img, delete;
     TextView playListName, numbers;
     BottomSheetAddMusic_playList bottomSheetAddMusic_playList;
+    Button backBtn;
+    boolean firstTime = true;
 
     public PlayListMusicFragment(PlayList playList, List<Music> musicList) {
         // Required empty public constructor
@@ -67,6 +67,7 @@ public class PlayListMusicFragment extends Fragment {
         playListName = view.findViewById(R.id.playListName);
         numbers = view.findViewById(R.id.numbers);
         delete = view.findViewById(R.id.delete);
+        backBtn = view.findViewById(R.id.backBtn);
     }
 
     private void controllerViews() {
@@ -108,6 +109,15 @@ public class PlayListMusicFragment extends Fragment {
 
             }
         });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlayListFragment playListFragment = new PlayListFragment(musicList);
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.frameLayout, playListFragment).commit();
+            }
+        });
     }
 
     private void addMusic() {
@@ -124,7 +134,7 @@ public class PlayListMusicFragment extends Fragment {
                 byte[] data = mmr.getEmbeddedPicture();
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, mmr.getEmbeddedPicture().length);
                 img.setImageBitmap(bitmap);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.getMessage();
                 img.setImageResource(R.drawable.audio_img_white);
             }
@@ -139,7 +149,7 @@ public class PlayListMusicFragment extends Fragment {
 
     private void setAdapter() {
 
-        AllMusicListAdapter allMusicListAdapter = new AllMusicListAdapter(getContext(), playList.getMusicList(), getActivity() , false);
+        AllMusicListAdapter allMusicListAdapter = new AllMusicListAdapter(getContext(), playList.getMusicList(), getActivity(), false);
         list.setHasFixedSize(true);
         list.setLayoutManager(new LinearLayoutManager(view.getContext()));
         list.setAdapter(allMusicListAdapter);
@@ -147,8 +157,10 @@ public class PlayListMusicFragment extends Fragment {
         allMusicListAdapter.setOnItemClickListener(new AllMusicListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int pos, View v) {
-
-                ((MainActivity) getActivity()).setPlayList_toPlay(playList.getMusicList());
+                if (firstTime) {
+                    ((MainActivity) getActivity()).setPlayList_toPlay(playList.getMusicList());
+                    firstTime = false;
+                }
                 ((MainActivity) getActivity()).playAudio(pos, getContext());
 
             }
