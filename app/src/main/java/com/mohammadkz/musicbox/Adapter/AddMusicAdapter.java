@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.mohammadkz.musicbox.Model.Music;
 import com.mohammadkz.musicbox.R;
 
@@ -40,21 +42,29 @@ public class AddMusicAdapter extends RecyclerView.Adapter<AddMusicAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.musicName.setText(musicList.get(position).getName());
-        holder.artistName.setText(musicList.get(position).getArtist());
+        Music music = musicList.get(position);
+        holder.musicName.setText(music.getName());
+        holder.artistName.setText(music.getArtist());
         holder.checkBox.setChecked(false);
 
         // set img of the pic
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(musicList.get(position).getPath());
+            mmr.setDataSource(music.getPath());
+            Bitmap bitmap;
             byte[] data = mmr.getEmbeddedPicture();
-            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, mmr.getEmbeddedPicture().length);
-            holder.artistImage.setImageBitmap(bitmap);
+            bitmap = BitmapFactory.decodeByteArray(data, 0, mmr.getEmbeddedPicture().length);
+
+            loadImage(holder.artistImage, bitmap);
+
         } catch (Exception e) {
             holder.artistImage.setImageResource(R.drawable.audio_img_white);
         }
 
+    }
+
+    private void loadImage(ImageView iv, Bitmap url) {
+        Glide.with(iv.getContext()).load(url).thumbnail(0.3f).into(iv);
     }
 
     @Override
