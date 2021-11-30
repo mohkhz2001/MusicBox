@@ -1,16 +1,13 @@
 package com.mohammadkz.musicbox;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentTransaction;
+import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
+import static com.mohammadkz.musicbox.ApplicationClass.ACTION_CLOSE;
+import static com.mohammadkz.musicbox.ApplicationClass.ACTION_NEXT;
+import static com.mohammadkz.musicbox.ApplicationClass.ACTION_PLAY;
+import static com.mohammadkz.musicbox.ApplicationClass.ACTION_PREV;
+import static com.mohammadkz.musicbox.ApplicationClass.CHANNEL_ID_2;
 
 import android.Manifest;
-import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -30,30 +27,33 @@ import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.PowerManager;
 import android.provider.MediaStore;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.palette.graphics.Palette;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.jackandphantom.blurimage.BlurImage;
-//import com.mohammadkz.musicbox.Fragment.HomeFragment;
-//import com.mohammadkz.musicbox.Fragment.LikeFragment;
 import com.mohammadkz.musicbox.Fragment.ArtistTabFragment;
 import com.mohammadkz.musicbox.Fragment.HomeFragment;
 import com.mohammadkz.musicbox.Fragment.LikeFragment;
@@ -74,15 +74,6 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
-import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE;
-import static android.content.Context.MODE_PRIVATE;
-import static com.mohammadkz.musicbox.ApplicationClass.ACTION_CLOSE;
-import static com.mohammadkz.musicbox.ApplicationClass.ACTION_NEXT;
-import static com.mohammadkz.musicbox.ApplicationClass.ACTION_PLAY;
-import static com.mohammadkz.musicbox.ApplicationClass.ACTION_PREV;
-import static com.mohammadkz.musicbox.ApplicationClass.CHANNEL_ID_2;
-
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity implements ActionPlaying, ServiceConnection {
 
@@ -100,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
     // to be played and used to callback the audioFocusChangeListener
     AudioAttributes playbackAttributes;
 
-    MediaSessionCompat mediaSession;
+    MediaSessionCompat mediaSessionCompat;
     MusicService musicService;
     NotificationManager notificationManager;
     Boolean played = false;
@@ -108,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
 
     int playNext = -1;
     int musicPos; // position of the music that play
+    int navId = R.id.home;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,8 +113,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
 
-        mediaSession = new MediaSessionCompat(this, "playerAudio");
-
+        mediaSessionCompat = new MediaSessionCompat(this, "MEDIA");
         Intent intent = new Intent(this, MusicService.class);
         boolean check = bindService(intent, this, BIND_AUTO_CREATE);
         Log.e("bindService", " " + check);
@@ -158,31 +149,34 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                switch (item.getItemId()) {
-                    case R.id.home:
-                        HomeFragment homeFragment = new HomeFragment(musicList);
-                        fragmentTransaction.replace(R.id.frameLayout, homeFragment);
-                        fragmentTransaction.commit();
-                        break;
-                    case R.id.like:
-                        LikeFragment likeFragment = new LikeFragment((ArrayList<Music>) musicList, setLikedMusic());
-                        fragmentTransaction.replace(R.id.frameLayout, likeFragment);
-                        fragmentTransaction.commit();
-                        break;
-                    case R.id.artist:
-                        ArtistTabFragment artistTabFragment = new ArtistTabFragment(artistList);
-                        fragmentTransaction.replace(R.id.frameLayout, artistTabFragment);
-                        fragmentTransaction.commit();
-                        break;
+                if (navId != item.getItemId()) {
+                    switch (item.getItemId()) {
+                        case R.id.home:
+                            HomeFragment homeFragment = new HomeFragment(musicList);
+                            fragmentTransaction.replace(R.id.frameLayout, homeFragment);
+                            fragmentTransaction.commit();
+                            break;
+                        case R.id.like:
+                            LikeFragment likeFragment = new LikeFragment(musicList, setLikedMusic());
+                            fragmentTransaction.replace(R.id.frameLayout, likeFragment);
+                            fragmentTransaction.commit();
+                            break;
+                        case R.id.artist:
+                            ArtistTabFragment artistTabFragment = new ArtistTabFragment(artistList);
+                            fragmentTransaction.replace(R.id.frameLayout, artistTabFragment);
+                            fragmentTransaction.commit();
+                            break;
 
-                    case R.id.playList:
-                        PlayListFragment playListFragment = new PlayListFragment(musicList);
-                        fragmentTransaction.replace(R.id.frameLayout, playListFragment);
-                        fragmentTransaction.commit();
-                        break;
+                        case R.id.playList:
+                            PlayListFragment playListFragment = new PlayListFragment(musicList);
+                            fragmentTransaction.replace(R.id.frameLayout, playListFragment);
+                            fragmentTransaction.commit();
+                            break;
 
-                }
-                return true;
+                    }
+                    navId = item.getItemId();
+                    return true;
+                } else return false;
             }
         });
 
@@ -230,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
             @Override
             public void onClick(View v) {
 
-                SheetBottomFragment sheetBottomFragment = new SheetBottomFragment(toPlay.get(musicPos));
+                SheetBottomFragment sheetBottomFragment = new SheetBottomFragment(toPlay.get(posToJump));
                 sheetBottomFragment.show(getSupportFragmentManager(), "tag");
 
             }
@@ -250,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
     }
 
     public boolean checkPermission() {
-        boolean per1 = true, per2 = true;
+        boolean per1 = true, per2 = true, per3 = true;
         int READ_EXTERNAL_PERMISSION = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
         if ((READ_EXTERNAL_PERMISSION != PackageManager.PERMISSION_GRANTED)) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_READ);
@@ -263,39 +257,17 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
             per2 = false;
         }
 
-        if (!per1 || !per2)
+        int RECORD_AUDIO = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
+        if ((RECORD_AUDIO != PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION_READ);
+            per3 = false;
+        }
+
+        if (!per1 || !per2 || !per3)
             return false;
         else
             return true;
     }
-//
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        switch (requestCode) {
-//            case PERMISSION_READ: {
-//                if (grantResults.length > 0 && permissions[0].equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-//                    if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-//                        Toast.makeText(getApplicationContext(), "Please allow storage permission", Toast.LENGTH_LONG).show();
-//                    } else {
-//
-//                    }
-//                }
-//
-//            }
-//            case PERMISSION_WRITE: {
-//                if (grantResults.length > 0 && permissions[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                    if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-//                        Toast.makeText(getApplicationContext(), "Please allow storage permission", Toast.LENGTH_LONG).show();
-//                    } else {
-//
-//                    }
-//                }
-//
-//            }
-//            break;
-//
-//        }
-//    }
 
     //fetch the audio files from storage
     public void getAudioFiles() {
@@ -316,8 +288,9 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
                 String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
                 String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
                 String url = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
+                String date = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED));
 
-                Music modelAudio = new Music(url, title, null, artist, duration);
+                Music modelAudio = new Music(url, title, null, artist, duration, Long.parseLong(date));
 
                 setArtistList(modelAudio);
                 musicList.add(modelAudio);
@@ -352,6 +325,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
 
         this.musicPos = musicPos;
         setPlayMusic(musicPos, context);
+        musicService.setInfo(); //  set the name , artist for the blu devices
 
     }
 
@@ -364,21 +338,23 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
             Log.e("lenght", " " + toPlay.get(musicPos).getDuration());
             mediaPlayer.reset();
 
+            Music play = toPlay.get(musicPos);
+
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-            mediaPlayer.setDataSource(toPlay.get(musicPos).getPath().toString());
+            mediaPlayer.setDataSource(play.getPath().toString());
 
             mediaPlayer.prepare();
             mediaPlayer.start();
 
-            setSinger_image(Uri.parse(toPlay.get(musicPos).getPath()));
+            setSinger_image(Uri.parse(play.getPath()));
 //
-            musicName.setText(toPlay.get(musicPos).getName());
-            artistName.setText(toPlay.get(musicPos).getArtist());
+            musicName.setText(play.getName());
+            artistName.setText(play.getArtist());
             play_pause.setImageResource(R.drawable.pause);
             posToJump = musicPos;
 
-            sharedPreferences_edit(toPlay.get(musicPos));
+            sharedPreferences_edit(play);
             notification(R.drawable.pause); // show notification
         } catch (Exception e) {
             Log.e("ERROR", " " + e.getMessage());
@@ -402,6 +378,7 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
             singer_image.setImageBitmap(bitmap);
             makeBlur(bitmap);
+            palette(bitmap);
         } catch (Exception e) {
             singer_image.setImageResource(R.drawable.audio_img_white);
             background.setImageResource(R.drawable.audio_img_white);
@@ -624,23 +601,22 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
 
         Bitmap bitmap;
         try {
-            bitmap = bimapGenerate(Uri.parse(toPlay.get(musicPos).getPath()));
+            bitmap = bimapGenerate(Uri.parse(toPlay.get(posToJump).getPath()));
         } catch (Exception e) {
             bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.audio_img_white);
         }
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID_2)
                 .setLargeIcon(bitmap)
-                .setSmallIcon(R.drawable.icon)
-                .setContentTitle(toPlay.get(musicPos).getName())
-                .setContentText(toPlay.get(musicPos).getArtist())
+                .setSmallIcon(R.drawable.ic_music)
+                .setContentTitle(toPlay.get(posToJump).getName())
+                .setContentText(toPlay.get(posToJump).getArtist())
                 .addAction(R.drawable.previous, "previous", prevPendingIntent)
                 .addAction(play_pause, "play", playPendingIntent)
                 .addAction(R.drawable.next, "next", nextPendingIntent)
                 .addAction(R.drawable.ic_close, "close", closePendingIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()) // .setMediaSession(mediaSession.getSessionToken())
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setColor(Color.BLUE)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setContentIntent(contentIntent)
@@ -692,16 +668,14 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
 
     @Override
     public void close() {
+        if (mediaPlayer.isPlaying())
+            mediaPlayer_pause();
         notificationManager.cancel(0);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (!mediaPlayer.isPlaying()) {
-            unbindService(this);
-            notificationManager.cancel(0);
-        }
     }
 
     @Override
@@ -715,7 +689,12 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
         else
             notification(R.drawable.play);
 
-        Log.e("bindService", " " + check);
+        Log.e("bindService on resume", " " + check);
+    }
+
+    @Override
+    public Music music() {
+        return musicList.get(musicPos);
     }
 
     @Override
@@ -783,4 +762,24 @@ public class MainActivity extends AppCompatActivity implements ActionPlaying, Se
         return posToJump;
     }
 
+    private void palette(Bitmap bitmap) {
+        Palette palette = Palette.generate(bitmap);
+
+        int vibrant = palette.getDarkVibrantColor(0x000000);
+        if (vibrant == 0)
+            vibrant = palette.getMutedColor(0x000000);
+        setTextColor(vibrant);
+    }
+
+    private void setTextColor(int color) {
+        artistName.setTextColor(color);
+        musicName.setTextColor(color);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancel(0);
+    }
 }
