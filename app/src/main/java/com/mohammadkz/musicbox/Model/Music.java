@@ -1,26 +1,29 @@
 package com.mohammadkz.musicbox.Model;
 
-import android.net.Uri;
-
 public class Music {
     private String Path;
     private String Name;
     private String Album;
     private String Artist;
     private String Duration;
+    private long dateAdded;
     private boolean Liked;
+    private boolean selected;
 
     public Music() {
         Liked = false;
+        selected = false;
     }
 
-    public Music(String path, String name, String album, String artist, String duration) {
+    public Music(String path, String name, String album, String artist, String duration, long dateAdded) {
         Path = path;
         Name = name;
         Album = album;
         Artist = artist;
         Duration = duration;
         Liked = false;
+        selected = false;
+        this.dateAdded = dateAdded;
     }
 
     public boolean isLiked() {
@@ -69,5 +72,21 @@ public class Music {
 
     public void setDuration(String duration) {
         Duration = duration;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public long getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(long dateAdded) {
+        this.dateAdded = dateAdded;
     }
 }
