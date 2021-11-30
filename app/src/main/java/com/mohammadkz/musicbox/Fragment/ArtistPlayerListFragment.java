@@ -4,24 +4,20 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.mohammadkz.musicbox.Adapter.AllMusicListAdapter;
 import com.mohammadkz.musicbox.MainActivity;
 import com.mohammadkz.musicbox.Model.Artist;
-import com.mohammadkz.musicbox.Model.Music;
 import com.mohammadkz.musicbox.R;
 
 import java.util.List;
@@ -38,8 +34,9 @@ public class ArtistPlayerListFragment extends Fragment {
     Artist artist;
     Button back;
     List<Artist> artistList;
+    boolean firstTime = true;
 
-    public ArtistPlayerListFragment(Artist artist , List<Artist> artistList) {
+    public ArtistPlayerListFragment(Artist artist, List<Artist> artistList) {
         // Required empty public constructor
         this.artist = artist;
         this.artistList = artistList;
@@ -92,7 +89,7 @@ public class ArtistPlayerListFragment extends Fragment {
             public void onClick(View v) {
                 ArtistTabFragment artistTabFragment = new ArtistTabFragment(artistList);
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.frameLayout ,artistTabFragment ).commit();
+                fragmentTransaction.replace(R.id.frameLayout, artistTabFragment).commit();
             }
         });
     }
@@ -107,7 +104,10 @@ public class ArtistPlayerListFragment extends Fragment {
         allMusicListAdapter.setOnItemClickListener(new AllMusicListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int pos, View v) {
-                ((MainActivity) getActivity()).setPlayList_toPlay(artist.getArtistMusic());
+                if (firstTime) {
+                    ((MainActivity) getActivity()).setPlayList_toPlay(artist.getArtistMusic());
+                    firstTime = false;
+                }
                 ((MainActivity) getActivity()).playAudio(pos, getContext());
 
             }

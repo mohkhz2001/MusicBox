@@ -27,7 +27,7 @@ public class LikeFragment extends Fragment {
     View view;
     List<Music> musicList, likedList;
     RecyclerView list;
-
+    boolean firstTime = true;
 
     public LikeFragment(List<Music> musicList, List<Music> likedList) {
         this.musicList = musicList;
@@ -57,7 +57,7 @@ public class LikeFragment extends Fragment {
 
     private void setAdapter() {
 
-        AllMusicListAdapter allMusicListAdapter = new AllMusicListAdapter(getContext(), likedList, getActivity() , true);
+        AllMusicListAdapter allMusicListAdapter = new AllMusicListAdapter(getContext(), likedList, getActivity(), true);
         list.setHasFixedSize(true);
         list.setLayoutManager(new LinearLayoutManager(view.getContext()));
         list.setAdapter(allMusicListAdapter);
@@ -65,7 +65,10 @@ public class LikeFragment extends Fragment {
         allMusicListAdapter.setOnItemClickListener(new AllMusicListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int pos, View v) {
-                ((MainActivity) getActivity()).setPlayList_toPlay(likedList);
+                if (firstTime) {
+                    ((MainActivity) getActivity()).setPlayList_toPlay(likedList);
+                    firstTime = false;
+                }
                 ((MainActivity) getActivity()).playAudio(pos, getContext());
             }
         });
