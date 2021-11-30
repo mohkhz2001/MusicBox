@@ -1,11 +1,7 @@
 package com.mohammadkz.musicbox.Adapter;
 
 import android.app.Activity;
-
-import java.io.ByteArrayOutputStream;
-
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
@@ -13,30 +9,23 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.mohammadkz.musicbox.MainActivity;
 import com.mohammadkz.musicbox.Model.LikeDA;
 import com.mohammadkz.musicbox.Model.Music;
 import com.mohammadkz.musicbox.R;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
-import com.nostra13.universalimageloader.core.decode.ImageDecoder;
-import com.nostra13.universalimageloader.core.decode.ImageDecodingInfo;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -68,18 +57,20 @@ public class AllMusicListAdapter extends RecyclerView.Adapter<AllMusicListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull AllMusicListAdapter.viewHolder holder, int position) {
-        holder.musicName.setText(musicList.get(position).getName());
-        holder.artistName.setText(musicList.get(position).getArtist());
+
+        Music music = musicList.get(position);
+
+        holder.musicName.setText(music.getName());
+        holder.artistName.setText(music.getArtist());
 
         try {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
             mmr.setDataSource(musicList.get(position).getPath());
             byte[] data = mmr.getEmbeddedPicture();
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, mmr.getEmbeddedPicture().length);
-            holder.artistImage.setImageBitmap(getResizedBitmap(bitmap, 80));
-//            ImageLoader imageLoader = ImageLoader.getInstance();
-//            ImageLoader.getInstance().init(config);
-//            imageLoader.displayImage(String.valueOf(getImageUri(bitmap)), holder.artistImage);
+
+            loadImage(holder.artistImage, bitmap);
+
         } catch (Exception e) {
             e.getMessage();
             holder.artistImage.setImageResource(R.drawable.audio_img_white);
@@ -99,6 +90,10 @@ public class AllMusicListAdapter extends RecyclerView.Adapter<AllMusicListAdapte
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
+    }
+
+    private void loadImage(ImageView iv, Bitmap url) {
+        Glide.with(iv.getContext()).load(url).thumbnail(0.3f).into(iv);
     }
 
     public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
