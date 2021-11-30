@@ -9,23 +9,50 @@
 
 
     <ImageView
-        android:backgroundTint="#3900FF"
         android:id="@+id/blurBg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#CDCDCD"
+        android:backgroundTint="#3900FF"
         android:scaleType="fitXY" />
+
+    <ImageButton
+        android:id="@+id/dragDown"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="15dp"
+        android:background="#00000000"
+        android:padding="6dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_arrow_down"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.gauravk.audiovisualizer.visualizer.CircleLineVisualizer
+        android:id="@+id/CircleLineVisualizer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:avDensity="0.5"
+        app:avSpeed="slow"
+        app:avType="outline"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/singer_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:civ_border_width="2dp"
+        android:layout_margin="50dp"
         android:src="@drawable/audio_img_white"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
     <TextView
@@ -33,10 +60,11 @@
         style="@style/autoscroll"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:text="Music name"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
@@ -45,13 +73,25 @@
         style="@style/autoscroll"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp"
         android:text="artist name"
         android:textColor="#EDEDED"
         android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintEnd_toEndOf="@+id/musicName"
         app:layout_constraintStart_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toBottomOf="@+id/musicName" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/more"
+        app:layout_constraintBottom_toTopOf="@+id/seekbar"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
     <SeekBar
         android:id="@+id/seekbar"
@@ -63,20 +103,20 @@
         app:layout_constraintTop_toBottomOf="@+id/artistName" />
 
     <TextView
-        android:layout_marginTop="5dp"
         android:id="@+id/past"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:text="01:30"
         android:textColor="#fff"
         app:layout_constraintStart_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toBottomOf="@+id/seekbar" />
 
     <TextView
-        android:layout_marginTop="5dp"
         android:id="@+id/remaining"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:text="01:30"
         android:textColor="#fff"
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
@@ -112,13 +152,25 @@
         app:layout_constraintStart_toEndOf="@+id/previous"
         app:layout_constraintTop_toTopOf="@+id/guideline8" />
 
+    <ImageButton
+        android:id="@+id/platMode"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="#00000000"
+        android:padding="10dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_repeat"
+        app:layout_constraintBottom_toTopOf="@+id/guideline8"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        app:layout_constraintTop_toTopOf="@+id/guideline8" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".10" />
+        app:layout_constraintGuide_percent=".1" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
@@ -132,7 +184,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".55" />
+        app:layout_constraintGuide_percent=".65" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
@@ -160,7 +212,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".75" />
+        app:layout_constraintGuide_percent=".86" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,21 +9,20 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.palette.graphics.Palette;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -40,10 +39,15 @@ public class SheetBottomFragment extends BottomSheetDialogFragment {
     private Music music;
     View view;
 
+    enum platMode {repeat, repeat_one, shuffle}
+
     ImageView blurBg, play, next, previous;
     CircleImageView singer_image;
     TextView artistName, musicName, remaining, past;
     SeekBar seekbar;
+    ImageButton platModeImg;
+    com.gauravk.audiovisualizer.visualizer.CircleLineVisualizer CircleLineVisualizer;
+    static platMode platMode;
 
 
     public SheetBottomFragment(Music music) {
@@ -56,6 +60,8 @@ public class SheetBottomFragment extends BottomSheetDialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_sheet_bottom, container, false);
+
+        platMode = SheetBottomFragment.platMode.repeat;
 
         initViews();
         controllerView();
@@ -75,6 +81,9 @@ public class SheetBottomFragment extends BottomSheetDialogFragment {
         seekbar = view.findViewById(R.id.seekbar);
         past = view.findViewById(R.id.past);
         remaining = view.findViewById(R.id.remaining);
+        platModeImg = view.findViewById(R.id.platMode);
+        CircleLineVisualizer = view.findViewById(R.id.CircleLineVisualizer);
+        CircleLineVisualizer.setAudioSessionId(((MainActivity) getActivity()).mediaPlayer.getAudioSessionId());
     }
 
     private void controllerView() {
@@ -136,6 +145,29 @@ public class SheetBottomFragment extends BottomSheetDialogFragment {
             }
         });
 
+        platModeImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (platMode) {
+                    case repeat:
+                        platMode = SheetBottomFragment.platMode.shuffle;
+                        platModeImg.setImageResource(R.drawable.ic_shuffle);
+                        Toast.makeText(getContext(), "shuffle", Toast.LENGTH_SHORT).show();
+                        break;
+                    case shuffle:
+                        platMode = SheetBottomFragment.platMode.repeat_one;
+                        platModeImg.setImageResource(R.drawable.ic_repeat_one);
+                        Toast.makeText(getContext(), "repeat current one", Toast.LENGTH_SHORT).show();
+                        break;
+                    case repeat_one:
+                        platMode = SheetBottomFragment.platMode.repeat;
+                        platModeImg.setImageResource(R.drawable.ic_repeat);
+                        Toast.makeText(getContext(), "repeat list", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        });
+
     }
 
     private void setItem() {
@@ -163,7 +195,8 @@ public class SheetBottomFragment extends BottomSheetDialogFragment {
             byte[] data = mmr.getEmbeddedPicture();
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
             singer_image.setImageBitmap(bitmap);
-//            makeBlur(bitmap);
+            makeBlur(bitmap);
+            palette(bitmap);
         } catch (Exception e) {
             singer_image.setImageResource(R.drawable.audio_img_white);
 //            blurBg.setImageResource(R.drawable.audio_img_white);
@@ -171,7 +204,7 @@ public class SheetBottomFragment extends BottomSheetDialogFragment {
     }
 
     private void makeBlur(Bitmap bitmap) {
-        BlurImage.with(getContext()).load(bitmap).intensity(10).Async(true).into(blurBg);
+        BlurImage.with(getContext()).load(bitmap).intensity(10).Async(false).into(blurBg);
     }
 
     //set audio progress
@@ -247,11 +280,31 @@ public class SheetBottomFragment extends BottomSheetDialogFragment {
         Long time = Long.valueOf(duration);
         int mns = (int) ((time / 60000) % 60000);
         int scs = (int) (time % 60000 / 1000);
-        Log.e("TIME", " " + mns + ":" + scs);
         if (scs < 10) {
             return mns + ":0" + scs;
         } else
             return mns + ":" + scs;
 
+    }
+
+    private void palette(Bitmap bitmap) {
+        Palette palette = Palette.generate(bitmap);
+        int vibrant = palette.getDarkVibrantColor(0x000000);
+        if (vibrant == 0)
+            vibrant = palette.getMutedColor(0x000000);
+        setColors(vibrant);
+    }
+
+    private void setColors(int color) {
+        artistName.setTextColor(color);
+        musicName.setTextColor(color);
+        CircleLineVisualizer.setColor(color);
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        if (CircleLineVisualizer != null)
+            CircleLineVisualizer.release();
+        super.onDismiss(dialog);
     }
 }
