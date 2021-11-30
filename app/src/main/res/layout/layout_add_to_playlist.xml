@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
+        android:id="@+id/musicRoot"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="8dp"
@@ -24,8 +25,7 @@
                 android:id="@+id/artistImage"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_centerVertical="true"
-                tools:src="@drawable/img" />
+                android:layout_centerVertical="true" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -37,7 +37,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-
                     android:orientation="vertical">
 
                     <TextView
@@ -46,9 +45,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
                         android:ellipsize="end"
+                        android:enabled="false"
                         android:singleLine="true"
                         android:text="Music name"
-                        android:textColor="#fff"
+                        android:textColor="@drawable/bg_music_select"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -71,12 +71,11 @@
                 android:id="@+id/checkbox"
                 android:layout_width="26dp"
                 android:layout_height="22dp"
-                android:checked="false"
-                app:buttonTint="#fff"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="15dp"
-                android:layout_alignParentRight="true"
-                />
+                android:checked="false"
+                app:buttonTint="#fff" />
 
 
         </RelativeLayout>
