@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomSheetSort"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6070707"
+    app:cardCornerRadius="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#E6070707"
+        android:orientation="vertical"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <CheckedTextView
+            android:id="@+id/AlphaAZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:text="By name A-Z"
+            android:textColor="@drawable/bg_sealected_sort"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:checked="true"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="#F2151515" />
+
+        <CheckedTextView
+            android:id="@+id/AlphaZA"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:text="By name Z-A"
+            android:textColor="@drawable/bg_sealected_sort"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:checked="false"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="#F2151515" />
+
+        <CheckedTextView
+            android:id="@+id/Date_AZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:checked="false"
+            android:text="By time modified A-Z"
+            android:textColor="@drawable/bg_sealected_sort"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="#F2151515" />
+
+        <CheckedTextView
+            android:id="@+id/Date_ZA"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:checked="false"
+            android:text="By time modified Z-A"
+            android:textColor="@drawable/bg_sealected_sort"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <Button
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_gravity="center"
+            android:id="@+id/close"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="5dp"
+            android:text="cancell"
+            android:textColor="#FF5722" />
+    </LinearLayout>
+
+
+
+</androidx.cardview.widget.CardView>

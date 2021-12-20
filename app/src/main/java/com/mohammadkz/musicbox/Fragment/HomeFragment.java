@@ -1,6 +1,9 @@
 package com.mohammadkz.musicbox.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,16 +13,19 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.mohammadkz.musicbox.Adapter.AllMusicListAdapter;
 import com.mohammadkz.musicbox.MainActivity;
 import com.mohammadkz.musicbox.Model.Music;
@@ -40,10 +46,11 @@ public class HomeFragment extends Fragment {
     boolean firstTime = true;
     AllMusicListAdapter allMusicListAdapter;
     RecyclerView.SmoothScroller smoothScroller;
+    BottomSheetDialog bottomSheetDialog;
 
-    enum Sorting {AZ, date}
+    enum Sorting {AlphaAZ, AlphaZA, Date_AZ, Date_ZA}
 
-    private Sorting sorting = Sorting.AZ;
+    private Sorting sorting;
 
 
     public HomeFragment(List<Music> musicList) {
@@ -57,6 +64,9 @@ public class HomeFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_home, container, false);
         initViews();
         controllerViews();
+        readSort();
+        changeSorting(sorting);
+        bottomSheetNav();
         number.setText("(" + musicList.size() + ")");
         ((MainActivity) getActivity()).start();
         setAdapter();
@@ -120,16 +130,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 firstTime = false;
-                switch (sorting) {
-                    case AZ:
-                        sorting = Sorting.date;
-                        sortingByDate();
-                        break;
-                    case date:
-                        sorting = Sorting.AZ;
-                        sortingByAZ();
-                        break;
-                }
+                bottomSheetDialog.show();
             }
         });
     }
@@ -274,7 +275,8 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void sortingByDate() {
+    // TODO: sort part
+    private void sortingByDateAZ() {
         Collections.sort(musicList, new Comparator<Music>() {
             @Override
             public int compare(Music music, Music music1) {
@@ -283,10 +285,24 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        allMusicListAdapter.notifyDataSetChanged();
+        if (allMusicListAdapter != null)
+            allMusicListAdapter.notifyDataSetChanged();
     }
 
-    private void sortingByAZ() {
+    private void sortingByDateZA() {
+        Collections.sort(musicList, new Comparator<Music>() {
+            @Override
+            public int compare(Music music, Music music1) {
+
+                return (int) (music1.getDateAdded() - music.getDateAdded());
+            }
+        });
+
+        if (allMusicListAdapter != null)
+            allMusicListAdapter.notifyDataSetChanged();
+    }
+
+    private void sortingByNameAZ() {
         Collections.sort(musicList, new Comparator<Music>() {
             @Override
             public int compare(Music music, Music music1) {
@@ -295,6 +311,188 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        allMusicListAdapter.notifyDataSetChanged();
+        if (allMusicListAdapter != null)
+            allMusicListAdapter.notifyDataSetChanged();
+    }
+
+    private void sortingByNameZA() {
+        Collections.sort(musicList, new Comparator<Music>() {
+            @Override
+            public int compare(Music music, Music music1) {
+
+                return music1.getName().compareTo(music.getName());
+            }
+        });
+
+        if (allMusicListAdapter != null)
+            allMusicListAdapter.notifyDataSetChanged();
+    }
+
+    //choose the sorting
+    private void bottomSheetNav() {
+        bottomSheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetTheme);
+        View bottomSheetView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_sort_bottom_sheet, (CardView) view.findViewById(R.id.bottomSheetSort));
+
+        CheckedTextView alphaAZ = bottomSheetView.findViewById(R.id.AlphaAZ);
+        CheckedTextView alphaZA = bottomSheetView.findViewById(R.id.AlphaZA);
+        CheckedTextView date_AZ = bottomSheetView.findViewById(R.id.Date_AZ);
+        CheckedTextView date_ZA = bottomSheetView.findViewById(R.id.Date_ZA);
+
+        if (sorting == null)
+            sorting = Sorting.AlphaAZ;
+
+        switch (sorting) {
+            case AlphaAZ:
+                alphaAZ.setChecked(true);
+                alphaZA.setChecked(false);
+                date_AZ.setChecked(false);
+                date_ZA.setChecked(false);
+                break;
+            case AlphaZA:
+                alphaZA.setChecked(true);
+                alphaAZ.setChecked(false);
+                date_AZ.setChecked(false);
+                date_ZA.setChecked(false);
+                break;
+            case Date_AZ:
+                date_AZ.setChecked(true);
+                alphaAZ.setChecked(false);
+                alphaZA.setChecked(false);
+                date_ZA.setChecked(false);
+                break;
+            case Date_ZA:
+                date_ZA.setChecked(true);
+                alphaAZ.setChecked(false);
+                alphaZA.setChecked(false);
+                date_AZ.setChecked(false);
+                break;
+            default:
+                alphaAZ.setChecked(true);
+                alphaZA.setChecked(false);
+                date_AZ.setChecked(false);
+                date_ZA.setChecked(false);
+                break;
+        }
+
+        alphaAZ.setOnClickListener(v -> {
+            if (sorting == Sorting.AlphaZA || sorting == Sorting.Date_AZ || sorting == Sorting.Date_ZA) {
+                alphaZA.setChecked(false);
+                date_AZ.setChecked(false);
+                date_ZA.setChecked(false);
+            }
+            alphaAZ.setChecked(true);
+            changeSorting(Sorting.AlphaAZ);
+            bottomSheetDialog.dismiss();
+        });
+
+        alphaZA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sorting == Sorting.AlphaAZ || sorting == Sorting.Date_AZ || sorting == Sorting.Date_ZA) {
+                    alphaAZ.setChecked(false);
+                    date_AZ.setChecked(false);
+                    date_ZA.setChecked(false);
+                }
+                alphaZA.setChecked(true);
+                changeSorting(Sorting.AlphaZA);
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        date_AZ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sorting == Sorting.AlphaAZ || sorting == Sorting.AlphaZA || sorting == Sorting.Date_ZA) {
+                    alphaAZ.setChecked(false);
+                    alphaZA.setChecked(false);
+                    date_ZA.setChecked(false);
+                }
+                date_AZ.setChecked(true);
+                changeSorting(Sorting.Date_AZ);
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        date_ZA.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sorting == Sorting.AlphaAZ || sorting == Sorting.AlphaZA || sorting == Sorting.Date_AZ) {
+                    alphaAZ.setChecked(false);
+                    alphaZA.setChecked(false);
+                    date_AZ.setChecked(false);
+                }
+                date_ZA.setChecked(true);
+                changeSorting(Sorting.Date_ZA);
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        bottomSheetView.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        bottomSheetDialog.setContentView(bottomSheetView);
+    }
+
+    private void changeSorting(Sorting sortChoosed) {
+        switch (sortChoosed) {
+            case AlphaAZ:
+                sorting = Sorting.AlphaAZ;
+                sortingByNameAZ();
+                break;
+            case AlphaZA:
+                sorting = Sorting.AlphaZA;
+                sortingByNameZA();
+                break;
+            case Date_AZ:
+                sorting = Sorting.Date_AZ;
+                sortingByDateAZ();
+                break;
+            case Date_ZA:
+                sorting = Sorting.Date_ZA;
+                sortingByDateZA();
+                break;
+        }
+        saveSort();
+    }
+
+    // use sharedPreferences to save and read
+    private void saveSort() {
+        SharedPreferences sh = getContext().getSharedPreferences("sort", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sh.edit();
+        editor.clear();
+        editor.putString("sorting", sorting.toString());
+        editor.commit();
+    }
+
+    private void readSort() {
+        try {
+            SharedPreferences sh = getContext().getSharedPreferences("sort", MODE_PRIVATE);
+            String data = sh.getString("sorting", Sorting.AlphaAZ.toString());
+            if (data != null) {
+                try {
+                    if (data.equals(Sorting.AlphaAZ.toString()))
+                        sorting = Sorting.AlphaAZ;
+                    else if (data.equals(Sorting.AlphaZA.toString()))
+                        sorting = Sorting.AlphaZA;
+                    else if (data.equals(Sorting.Date_AZ.toString()))
+                        sorting = Sorting.Date_AZ;
+                    else if (data.equals(Sorting.Date_ZA.toString()))
+                        sorting = Sorting.Date_ZA;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                sorting = Sorting.AlphaAZ;
+            }
+        } catch (Exception e) {
+            sorting = Sorting.AlphaAZ;
+            e.getMessage();
+        }
     }
 }
